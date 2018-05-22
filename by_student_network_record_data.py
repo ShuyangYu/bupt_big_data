@@ -18,41 +18,46 @@ sns.set(style="whitegrid", color_codes=True)
 # by_student_info_data = pd.read_csv('by/by_student_info.csv', sep='\t', names=headers_by_student_info)
 # by_course_schedule_info_data = pd.read_csv('by/by_course_schedule_info.csv', sep='\t', names=headers_by_course_schedule_info)
 
-# by_student_network_record_data = pd.read_csv('new_network_student_info_data.csv')
+# by_student_network_record_data = pd.read_csv('grade_one_network_info_data.csv')
 
-# print(by_student_network_record_data.head())
+# # print(by_student_network_record_data.head())
 
 # # 取出logintime的年/月/日
 # by_student_network_record_data['day'] = by_student_network_record_data['logintime'].str.split(expand=True)[0]
+
 # # 更改logintime和logouttime的格式
 # by_student_network_record_data['logintime'] = pd.to_datetime(by_student_network_record_data['logintime'])
 # by_student_network_record_data['logouttime'] = pd.to_datetime(by_student_network_record_data['logouttime'])
+
 # # 计算总流量
 # by_student_network_record_data['total_mb'] = by_student_network_record_data['in_mb'] + by_student_network_record_data['out_mb']
+
 # # 取出logintime的weekday
 # by_student_network_record_data['weekday'] = by_student_network_record_data['logintime'].dt.weekday
-# # 计算每个logintime和logouttime的时间差，并通过total_seconds转换为小时
+
 # by_student_network_record_data['duration'] = by_student_network_record_data['logouttime'] - by_student_network_record_data['logintime']
 # by_student_network_record_data['duration_seconds'] = (by_student_network_record_data['duration'].dt.total_seconds()) / 3600.
+
 # # 吧logintime转换为小时
 # by_student_network_record_data['logintime_seconds'] = (by_student_network_record_data['logintime'].dt.hour * 3600. + by_student_network_record_data['logintime'].dt.minute * 60 + by_student_network_record_data['logintime'].dt.second) / 3600.
 
-# 得到每个人每天的上网次数，按id，logintime排序
-# 处理跨天数据，截止到23：59：59
+# # 处理跨天数据，截止到23：59：59
 # by_student_network_record_data = by_student_network_record_data.sort_values(by=['id', 'logintime']).reset_index()
 
 # for i in range(by_student_network_record_data.shape[0]):
 #     if(by_student_network_record_data['logintime'][i].day != by_student_network_record_data['logouttime'][i].day):
 #         by_student_network_record_data['logouttime'][i] = pd.Timestamp(by_student_network_record_data['logintime'][i].year, by_student_network_record_data['logintime'][i].month, by_student_network_record_data['logintime'][i].day, 23,59,59)
-#     if(i % 1000 == 0):
+#     if(i % 10000 == 0):
 #         print(i)
 
-# by_student_network_record_data.to_csv('by_student_network_record_data_handle.csv')
+# by_student_network_record_data.to_csv('network_record_data_handle.csv')
 
 
 # 提取特征
 # load data
-by_student_network_record_data = pd.read_csv('by_student_network_record_data_handle.csv')
+by_student_network_record_data = pd.read_csv('network_record_data_handle.csv')
+by_student_network_record_data.to_json()
+
 # 得到每个人每天的上网次数，按id，logintime排序
 # by_student_network_record_data.groupby(['id','day'])['index'].count().reset_index().to_csv('network_count_by_day.csv')
 
@@ -160,16 +165,16 @@ by_student_network_record_data = pd.read_csv('by_student_network_record_data_han
 
 # feature_network_id_day.to_csv('feature_network_id_day.csv')
 
-feature_network_id_day = pd.read_csv('feature_network_id_day.csv')
-print(feature_network_id_day.head())
+# feature_network_id_day = pd.read_csv('feature_network_id_day.csv')
+# print(feature_network_id_day.head())
 
 # 统计每天的上网流量及时长
-temp = by_student_network_record_data.groupby(['id','day'])['total_mb', 'duration_seconds'].sum().reset_index()
+# temp = by_student_network_record_data.groupby(['id','day'])['total_mb', 'duration_seconds'].sum().reset_index()
 
-feature_network_id_day['total_mb_day'] = temp['total_mb']
-feature_network_id_day['duration_seconds_day'] = temp['duration_seconds']
+# feature_network_id_day['total_mb_day'] = temp['total_mb']
+# feature_network_id_day['duration_seconds_day'] = temp['duration_seconds']
 
-del temp
-gc.collect()
+# del temp
+# gc.collect()
 # feature_network_id_day.to_csv('feature_network_id_day.csv')
 
