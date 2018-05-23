@@ -1,5 +1,6 @@
 # coding: utf-8
 import gc
+import os
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -16,47 +17,66 @@ sns.set(style="whitegrid", color_codes=True)
 # load data
 # by_student_network_record_data = pd.read_csv('by/by_student_network_record.csv', sep='\t', names=headers_by_student_network_record).drop(['user_mac', 'user_os'], axis=1)
 # by_student_info_data = pd.read_csv('by/by_student_info.csv', sep='\t', names=headers_by_student_info)
-# by_course_schedule_info_data = pd.read_csv('by/by_course_schedule_info.csv', sep='\t', names=headers_by_course_schedule_info)
 
-# by_student_network_record_data = pd.read_csv('grade_one_network_info_data.csv')
+if os.path.exists('network_record_data_handle.csv'):
+    print('network_record_data_handle.csv    exist')
+    print('loading...')
 
-# # print(by_student_network_record_data.head())
+    by_student_network_record_data = pd.read_csv(
+        'network_record_data_handle.csv')
 
-# # 取出logintime的年/月/日
-# by_student_network_record_data['day'] = by_student_network_record_data['logintime'].str.split(expand=True)[0]
+else:
+    print('network_record_data_handle.csv    missing')
+    print('handle...')
 
-# # 更改logintime和logouttime的格式
-# by_student_network_record_data['logintime'] = pd.to_datetime(by_student_network_record_data['logintime'])
-# by_student_network_record_data['logouttime'] = pd.to_datetime(by_student_network_record_data['logouttime'])
+    by_student_network_record_data = pd.read_csv(
+        'grade_one_network_info_data.csv')
+    # 取出logintime的年/月/日
+    by_student_network_record_data['day'] = by_student_network_record_data[
+        'logintime'].str.split(expand=True)[0]
 
-# # 计算总流量
-# by_student_network_record_data['total_mb'] = by_student_network_record_data['in_mb'] + by_student_network_record_data['out_mb']
+    # 更改logintime和logouttime的格式
+    by_student_network_record_data['logintime'] = pd.to_datetime(
+        by_student_network_record_data['logintime'])
+    by_student_network_record_data['logouttime'] = pd.to_datetime(
+        by_student_network_record_data['logouttime'])
 
-# # 取出logintime的weekday
-# by_student_network_record_data['weekday'] = by_student_network_record_data['logintime'].dt.weekday
+    # 计算总流量
+    by_student_network_record_data[
+        'total_mb'] = by_student_network_record_data['in_mb'] + by_student_network_record_data['out_mb']
 
-# by_student_network_record_data['duration'] = by_student_network_record_data['logouttime'] - by_student_network_record_data['logintime']
-# by_student_network_record_data['duration_seconds'] = (by_student_network_record_data['duration'].dt.total_seconds()) / 3600.
+    # 取出logintime的weekday
+    by_student_network_record_data['weekday'] = by_student_network_record_data[
+        'logintime'].dt.weekday
 
-# # 吧logintime转换为小时
-# by_student_network_record_data['logintime_seconds'] = (by_student_network_record_data['logintime'].dt.hour * 3600. + by_student_network_record_data['logintime'].dt.minute * 60 + by_student_network_record_data['logintime'].dt.second) / 3600.
+    by_student_network_record_data[
+        'duration'] = by_student_network_record_data['logouttime'] - by_student_network_record_data['logintime']
+    by_student_network_record_data['duration_seconds'] = (
+        by_student_network_record_data['duration'].dt.total_seconds()) / 3600.
 
-# # 处理跨天数据，截止到23：59：59
-# by_student_network_record_data = by_student_network_record_data.sort_values(by=['id', 'logintime']).reset_index()
+    # 吧logintime转换为小时
+    by_student_network_record_data['logintime_seconds'] = (
+        by_student_network_record_data['logintime'].dt.hour * 3600. +
+        by_student_network_record_data['logintime'].dt.minute * 60 +
+        by_student_network_record_data['logintime'].dt.second) / 3600.
 
-# for i in range(by_student_network_record_data.shape[0]):
-#     if(by_student_network_record_data['logintime'][i].day != by_student_network_record_data['logouttime'][i].day):
-#         by_student_network_record_data['logouttime'][i] = pd.Timestamp(by_student_network_record_data['logintime'][i].year, by_student_network_record_data['logintime'][i].month, by_student_network_record_data['logintime'][i].day, 23,59,59)
-#     if(i % 10000 == 0):
-#         print(i)
+    # 处理跨天数据，截止到23：59：59
+    by_student_network_record_data = by_student_network_record_data.sort_values(
+        by=['id', 'logintime']).reset_index()
 
-# by_student_network_record_data.to_csv('network_record_data_handle.csv')
+    for i in range(by_student_network_record_data.shape[0]):
+        if (by_student_network_record_data['logintime'][i].day !=
+                by_student_network_record_data['logouttime'][i].day):
+            by_student_network_record_data['logouttime'][i] = pd.Timestamp(
+                by_student_network_record_data['logintime'][i].year,
+                by_student_network_record_data['logintime'][i].month,
+                by_student_network_record_data['logintime'][i].day, 23, 59, 59)
+        if (i % 10000 == 0):
+            print(i)
 
+    by_student_network_record_data.to_csv('network_record_data_handle.csv')
 
 # 提取特征
-# load data
-by_student_network_record_data = pd.read_csv('network_record_data_handle.csv')
-by_student_network_record_data.to_json()
 
 # 得到每个人每天的上网次数，按id，logintime排序
 # by_student_network_record_data.groupby(['id','day'])['index'].count().reset_index().to_csv('network_count_by_day.csv')
@@ -177,4 +197,3 @@ by_student_network_record_data.to_json()
 # del temp
 # gc.collect()
 # feature_network_id_day.to_csv('feature_network_id_day.csv')
-
