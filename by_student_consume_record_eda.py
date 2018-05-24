@@ -11,8 +11,7 @@ from matplotlib import gridspec
 
 pd.set_option('max_colwidth', 200)
 
-by_student_consume_record_data = pd.read_csv(
-    'consume_info_data.csv')
+by_student_consume_record_data = pd.read_csv('consume_info_data.csv')
 
 by_student_consume_record_data = by_student_consume_record_data.dropna(axis=0)
 
@@ -81,7 +80,8 @@ if os.path.exists('consume_record_data_sort_shower.csv'):
     print('consume_record_data_sort_shower.csv    exist')
     print('loading...')
 
-    consume_record_data_sort_shower = pd.read_csv('consume_record_data_sort_shower.csv')
+    consume_record_data_sort_shower = pd.read_csv(
+        'consume_record_data_sort_shower.csv')
 else:
     print('consume_record_data_sort_shower.csv    missing')
     print('handle...')
@@ -104,16 +104,17 @@ else:
     consume_record_data_sort_shower.to_csv(
         'consume_record_data_sort_shower.csv')
 
-# # 存储吃饭数据
-# by_student_consume_record_data_sort_by_id_datetime_chi = consume_record_data_sort[
-#     consume_record_data_sort['type'] == '餐费支出'].reset_index()
+# 存储吃饭数据
+consume_record_chi = consume_record_data_sort[consume_record_data_sort['type']
+                                              == '餐费支出'].reset_index()
+consume_record_chi.head()                                              
+consume_record_chi.groupby(['id', 'day'])['remainder'].sum().reset_index().to_csv('consume_record_chi_day.csv')
+# 处理商场购物
+consume_record_shopping = consume_record_data_sort[
+    consume_record_data_sort['type'] == '商场购物'].reset_index()
+consume_record_shopping.groupby(['id', 'day'])['remainder'].sum().reset_index().to_csv('consume_record_shopping_day.csv')
 
-# by_student_consume_record_data_sort_by_id_datetime_chi.to_csv(
-#     'by_student_consume_record_data_sort_by_id_datetime_chi.csv')
-# # 处理商场购物
-# by_student_consume_record_data_sort_by_id_datetime_shopping = consume_record_data_sort[
-#     consume_record_data_sort['type'] == '商场购物'].reset_index()
-
+# consume_record_data_sort['type'].value_counts()
 # by_student_consume_record_data_sort_by_id_datetime_shopping.to_csv(
 #     'by_student_consume_record_data_sort_by_id_datetime_shoopping.csv')
 
