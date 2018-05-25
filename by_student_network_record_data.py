@@ -124,7 +124,10 @@ by_student_network_record_data['duration_seconds'] = (
 
 temp = by_student_network_record_data.groupby(
     ['id', 'day'])['total_mb', 'duration_seconds'].sum().reset_index()
+temp.to_csv('network_record_day_mb_time.csv')
 
+del temp
+gc.collect()
 # 每人每天上课时间段内上网流量及时长
 # 吧logintime转换为小时
 by_student_network_record_data['logouttime_seconds'] = (
@@ -134,7 +137,6 @@ by_student_network_record_data['logouttime_seconds'] = (
     
 by_student_network_record_data['total_class'] = 0
 
-by_student_network_record_data.iloc[:5, -1]
 by_student_network_record_data['total_class'] = by_student_network_record_data.apply(lambda x: time_for_class(x['logintime_seconds'], x['logouttime_seconds']), axis=1)
 
 by_student_network_record_data.groupby(['id', 'day'])['total_class'].sum().reset_index().to_csv('network_record_day_class.csv')
