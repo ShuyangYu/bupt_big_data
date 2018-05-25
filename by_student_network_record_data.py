@@ -11,6 +11,19 @@ sns.set(style="whitegrid", color_codes=True)
 
 
 def relu(x):
+    """
+    relu函数，正值返回本身，负值返回0
+
+    Parameters
+    ----------
+    args : float
+
+    x : float
+        
+    Returns
+    -------
+    x: float  
+    """
     if(x > 0):
         return x
     else:
@@ -18,6 +31,22 @@ def relu(x):
 
 
 def time_for_class(logintime, logouttime):
+    """
+    统计在上课时间段：上午8->12,下午13:30->17.20，上网的时间
+
+    Parameters
+    ----------
+    Args: float, float
+        logintime : float 
+            转换为小时的登入时间
+        logouttime : 
+            转换为小时的登出时间
+    
+    Returns
+    -------
+    result : float
+        上午与下午上网时间之和
+    """
     temp_1 = 8
     temp_2 = 12
     result = 0 
@@ -38,9 +67,6 @@ def time_for_class(logintime, logouttime):
     result += relu(temp_2 - temp_1)
     return result
 
-
-def funcname(parameter_list):
-    pass
 # headers
 # headers_by_student_network_record = ['id', 'logintime', 'logouttime', 'in_mb', 'out_mb', 'user_mac', 'user_os']
 # headers_by_student_info = ['id', 'sex', 'grade', 'school', 'province']
