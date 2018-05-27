@@ -17,8 +17,7 @@ def relu(x):
     Parameters
     ----------
     args : float
-
-    x : float
+        x : float
         
     Returns
     -------
