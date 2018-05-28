@@ -104,15 +104,15 @@ else:
     consume_record_data_sort_shower.to_csv(
         'consume_record_data_sort_shower.csv')
 
-# 存储吃饭数据
-consume_record_chi = consume_record_data_sort[consume_record_data_sort['type']
-                                              == '餐费支出'].reset_index()
-consume_record_chi.head()                                              
-consume_record_chi.groupby(['id', 'day'])['remainder'].sum().reset_index().to_csv('consume_record_chi_day.csv')
-# 处理商场购物
-consume_record_shopping = consume_record_data_sort[
-    consume_record_data_sort['type'] == '商场购物'].reset_index()
-consume_record_shopping.groupby(['id', 'day'])['remainder'].sum().reset_index().to_csv('consume_record_shopping_day.csv')
+# 存储每日吃饭、淋浴、购物、上网消费
+save_list = ['meal_fee', 'shower_fee', 'shopping_fee', 'network_fee']
+save_list_name = ['餐费支出', '淋浴支出', '商场购物', '网费充值']
+
+for fee, name in zip(save_list, save_list_name):
+    temp = consume_record_data_sort[consume_record_data_sort['type'] ==
+                                    name].reset_index()
+    temp.groupby(['id', 'day'])['remainder'].sum().reset_index().to_csv(
+        'consume_record_day_' + fee + '.csv')
 
 # consume_record_data_sort['type'].value_counts()
 # by_student_consume_record_data_sort_by_id_datetime_shopping.to_csv(
